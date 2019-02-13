@@ -8,7 +8,8 @@ module.exports = function (grunt) {
     concat: require('./grunt/config/concat.js'),
     compass: require('./grunt/config/compass.js'),
     compress: require('./grunt/config/compress.js'),
-    karma: require('./grunt/config/karma.js')
+    karma: require('./grunt/config/karma.js'),
+    watch: require('./grunt/config/watch.js')
   });
 
   require('load-grunt-tasks')(grunt);
