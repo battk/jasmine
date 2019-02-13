@@ -1,5 +1,5 @@
-module.exports = function(grunt) {
-  var pkg = require("./package.json");
+module.exports = function (grunt) {
+  var pkg = require('./package.json');
   global.jasmineVersion = pkg.version;
 
   grunt.initConfig({
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
   var version = require('./grunt/tasks/version.js');
 
   grunt.registerTask('build:copyVersionToGem',
-    "Propagates the version from package.json to version.rb",
+    'Propagates the version from package.json to version.rb',
     version.copyToGem);
 
   grunt.registerTask('buildDistribution',
@@ -34,16 +34,16 @@ module.exports = function(grunt) {
     ]
   );
 
-  grunt.registerTask("execSpecsInNode",
-    "Run Jasmine core specs in Node.js",
-    function() {
+  grunt.registerTask('execSpecsInNode',
+    'Run Jasmine core specs in Node.js',
+    function () {
       var done = this.async(),
-          Jasmine = require('jasmine'),
-          jasmineCore = require('./lib/jasmine-core.js'),
-          jasmine = new Jasmine({jasmineCore: jasmineCore});
+        Jasmine = require('jasmine'),
+        jasmineCore = require('./lib/jasmine-core.js'),
+        jasmine = new Jasmine({jasmineCore: jasmineCore});
 
       jasmine.loadConfigFile('./spec/support/jasmine.json');
-      jasmine.onComplete(function(passed) {
+      jasmine.onComplete(function (passed) {
         done(passed);
       });
 
@@ -51,10 +51,25 @@ module.exports = function(grunt) {
     }
   );
 
-  grunt.registerTask("execSpecsInNode:performance",
-    "Run Jasmine performance specs in Node.js",
-    function() {
-      require("shelljs").exec("node_modules/.bin/jasmine JASMINE_CONFIG_PATH=spec/support/jasmine-performance.json");
+  grunt.registerTask('execSpecsInNode:performance',
+    'Run Jasmine performance specs in Node.js',
+    function () {
+      require('shelljs').exec('node_modules/.bin/jasmine JASMINE_CONFIG_PATH=spec/support/jasmine-performance.json');
     }
+  );
+
+  grunt.registerTask('execSpecsInBrowser',
+    'Run Jasmine core specs in Browser',
+    [
+      'karma:unit'
+    ]
+  );
+
+  grunt.registerTask('execAllSpecs',
+    'Run Jasmine core specs in Node.js and Browser',
+    [
+      'execSpecsInNode',
+      'execSpecsInBrowser'
+    ]
   );
 };

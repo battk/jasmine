@@ -106,7 +106,7 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 Jasmine uses the [Karma Jasmine package](https://github.com/karma-runner/karma-jasmine) to unit test itself in browser.
 
-    $ grunt karma:unit
+    $ grunt execSpecsInBrowser
 
 ...and then the results will print to the console. Some browsers that lack headless may open and close themselves.
 
@@ -133,7 +133,7 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
 
 ## Before Committing or Submitting a Pull Request
 
-1. Ensure all specs are green in browser *and* node
+1. Ensure all specs are green in browser *and* node with `grunt execAllSpecs`
 1. Ensure JSHint is green with `grunt jshint`
 1. Build `jasmine.js` with `grunt buildDistribution` and run all specs again - this ensures that your changes self-test well
 1. Revert your changes to `jasmine.js` and `jasmine-html.js`
