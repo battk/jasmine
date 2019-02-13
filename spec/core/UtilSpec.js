@@ -197,8 +197,8 @@ describe("jasmineUnderTest.util", function() {
     it("returns the file containing jasmine.util", function() {
       // Chrome sometimes reports foo.js as foo.js/, so tolerate
       // a trailing slash if present.
-      expect(jasmineUnderTest.util.jasmineFile()).toMatch(/util.js\/?$/);
-      expect(jasmine.util.jasmineFile()).toMatch(/jasmine.js\/?$/);
+      expect(jasmineUnderTest.util.jasmineFile()).toMatch(/util.js\/?(\?.*)?$/);
+      expect(jasmine.util.jasmineFile()).toMatch(/jasmine.js\/?(\?.*)?$/);
     });
   });
 });

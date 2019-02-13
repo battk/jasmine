@@ -56,10 +56,10 @@ For example, for Jasmine development there is a different `dev_boot.js` for Jasm
 ### Compatibility
 
 * Browser Minimum
-  * IE8
+  * IE10
   * Firefox 3.x
   * Chrome ??
-  * Safari 5
+  * Safari 8
 
 ## Development
 
@@ -103,6 +103,12 @@ Or, How to make a successful pull request
 Follow these tips and your pull request, patch, or suggestion is much more likely to be integrated.
 
 ### Running Specs
+
+Jasmine uses the [Karma Jasmine package](https://github.com/karma-runner/karma-jasmine) to unit test itself in browser.
+
+    $ grunt karma:unit
+
+...and then the results will print to the console. Some browsers that lack headless may open and close themselves.
 
 Jasmine uses the [Jasmine Ruby gem](http://github.com/jasmine/jasmine-gem) to test itself in browser.
 
