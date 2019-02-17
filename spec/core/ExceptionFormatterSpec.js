@@ -1,5 +1,5 @@
-describe("ExceptionFormatter", function() {
-  describe("#message", function() {
+describe('ExceptionFormatter', function() {
+  describe('#message', function() {
     it('formats Firefox exception messages', function() {
       var sampleFirefoxException = {
           fileName: 'foo.js',
@@ -59,24 +59,40 @@ describe("ExceptionFormatter", function() {
       expect(message).toEqual('[EmptyError] thrown');
     });
 
-    it("formats thrown exceptions that aren't errors", function() {
-      var thrown = "crazy error",
+    it('formats thrown exceptions that aren\'t errors', function() {
+      var thrown = 'crazy error',
           exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
           message = exceptionFormatter.message(thrown);
 
-      expect(message).toEqual("crazy error thrown");
+      expect(message).toEqual('crazy error thrown');
     });
   });
 
-  describe("#stack", function() {
-    it("formats stack traces", function() {
-      var error;
-      try { throw new Error("an error") } catch(e) { error = e; }
+  describe('#stack', function() {
+    var nError;
 
-      expect(new jasmineUnderTest.ExceptionFormatter().stack(error)).toMatch(/ExceptionFormatterSpec\.js.*\d+/)
+    // is an external dependency, but NetSuite Errors do not have stacks
+    if (jasmine.getEnv().isNetSuite()) {
+      require(['N/error'], function(error) {
+        nError = error;
+      });
+    }
+
+    var generateError = function generateError(message) {
+      if (typeof nError === 'function') {
+        return nError.create({message: message});
+      }
+      return new Error(message);
+    }
+
+    it('formats stack traces', function() {
+      var error;
+      try { throw generateError('an error'); } catch(e) { error = e; }
+
+      expect(new jasmineUnderTest.ExceptionFormatter().stack(error)).toMatch(/ExceptionFormatterSpec\.js.*\d+/);
     });
 
-    it("filters Jasmine stack frames from V8 style traces", function() {
+    it('filters Jasmine stack frames from V8 style traces', function() {
       var error = {
         message: 'nope',
         stack: 'Error: nope\n' +
@@ -96,7 +112,7 @@ describe("ExceptionFormatter", function() {
       );
     });
 
-    it("filters Jamine stack frames from Webkit style traces", function() {
+    it('filters Jamine stack frames from Webkit style traces', function() {
       var error = {
         stack: 'http://localhost:8888/__spec__/core/UtilSpec.js:115:28\n' +
           'fn1@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
@@ -114,9 +130,9 @@ describe("ExceptionFormatter", function() {
       );
     });
 
-    it("filters Jasmine stack frames in this environment", function() {
+    it('filters Jasmine stack frames in this environment', function() {
       var error, i;
-      try { throw new Error("an error"); } catch(e) { error = e; }
+      try { throw generateError('an error'); } catch(e) { error = e; }
       var subject = new jasmineUnderTest.ExceptionFormatter({
         jasmineFile: jasmine.util.jasmineFile()
       });
@@ -124,6 +140,9 @@ describe("ExceptionFormatter", function() {
       var lines = result.split('\n');
 
       if (lines[0].match(/an error/)) {
+        lines.shift();
+      }
+      if (lines[0].match(/generateError/)) {
         lines.shift();
       }
 
@@ -136,12 +155,12 @@ describe("ExceptionFormatter", function() {
       }
     });
 
-    it("handles multiline error messages in this environment", function() {
-      var error, i, msg = "an error\nwith two lines";
-      try { throw new Error(msg); } catch(e) { error = e; }
+    it('handles multiline error messages in this environment', function() {
+      var error, i, msg = 'an error\nwith two lines';
+      try { throw generateError(msg); } catch(e) { error = e; }
 
       if (error.stack.indexOf(msg) === -1) {
-        pending("Stack traces don't have messages in this environment");
+        pending('Stack traces don\'t have messages in this environment');
       }
       var subject = new jasmineUnderTest.ExceptionFormatter({
         jasmineFile: jasmine.util.jasmineFile()
@@ -149,24 +168,30 @@ describe("ExceptionFormatter", function() {
       var result = subject.stack(error);
       var lines = result.split('\n');
 
+      if (lines[2].match(/generateError/)) {
+        lines.splice(2,1);
+      }
+
       expect(lines[0]).toMatch(/an error/);
       expect(lines[1]).toMatch(/with two lines/);
       expect(lines[2]).toMatch(/ExceptionFormatterSpec.js/);
       expect(lines[3]).toMatch(/<Jasmine>/);
     });
 
-    it("returns null if no Error provided", function() {
+    it('returns null if no Error provided', function() {
       expect(new jasmineUnderTest.ExceptionFormatter().stack()).toBeNull();
     });
 
-    it("includes error properties in stack", function() {
+    it('includes error properties in stack', function() {
       var error;
-      try { throw new Error("an error") } catch(e) { error = e; }
+      try { throw generateError('an error'); } catch(e) { error = e; }
       error.someProperty = 'hello there';
+      error.toJSON = 'general kenobi';
 
       var result = new jasmineUnderTest.ExceptionFormatter().stack(error);
 
       expect(result).toMatch(/error properties:.*someProperty.*hello there/);
+      expect(result).not.toMatch(/error properties:.*toJSON.*general kenobi/);
     });
 
   });

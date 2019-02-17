@@ -2,7 +2,10 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
   /* globals exports, global, module, window */
   var jasmineRequire;
 
-  if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined') {
+  if (typeof define === 'function' && define.amd) {
+    jasmineRequire = {};
+    define([], getJasmineRequire);
+  } else if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined') {
     if (typeof global !== 'undefined') {
       jasmineGlobal = global;
     } else {
@@ -20,11 +23,11 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     return jasmineRequire;
   }
 
-  getJasmineRequire().core = function(jRequire) {
+  getJasmineRequire().core = function(jRequire, nError) {
     var j$ = {};
 
     jRequire.base(j$, jasmineGlobal);
-    j$.util = jRequire.util(j$);
+    j$.util = jRequire.util(j$, nError);
     j$.errors = jRequire.errors();
     j$.formatErrorMsg = jRequire.formatErrorMsg();
     j$.Any = jRequire.Any(j$);

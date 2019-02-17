@@ -110,8 +110,8 @@ jasmineRequire.HtmlReporter = function(j$) {
     this.specDone = function(result) {
       stateBuilder.specDone(result);
 
-      if(noExpectations(result) && typeof console !== 'undefined' && typeof console.error !== 'undefined') {
-        console.error('Spec \'' + result.fullName + '\' has no expectations.');
+      if(noExpectations(result) && typeof console !== 'undefined' && typeof console.warn === 'function') {
+        console.warn('Spec \'' + result.fullName + '\' has no expectations.');
       }
 
       if (!symbols){

@@ -131,7 +131,7 @@ describe("StackTrace", function() {
   it("understands Phantom-Linux style traces", function() {
     var error = {
       message: 'nope',
-      stack: 
+      stack:
         '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n' +
         '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     };
@@ -201,6 +201,102 @@ describe("StackTrace", function() {
         func: 'QueueRunner.run',
         file: 'http://localhost:8888/__jasmine__/jasmine.js',
         line: 4320
+      }
+    ]);
+  });
+
+  it('understands NetSuite style traces from an Error', function() {
+    var error = {
+      message: 'error message',
+      stack:
+        '<anonymous>(/SuiteScripts/ns-jasmine/spec/introduction.js:424)\n' +
+        'attempt(/SuiteScripts/ns-jasmine/vendor/shimJasmine/shim-jasmine.js:172)'
+    };
+
+    var result = new jasmineUnderTest.StackTrace(error);
+
+    // the error message is not in the stack
+    expect(result.message).toBeFalsy();
+    expect(result.style).toEqual('webkit');
+    expect(result.frames).toEqual([
+      {
+        raw: '<anonymous>(/SuiteScripts/ns-jasmine/spec/introduction.js:424)',
+        func: '<anonymous>',
+        file: '/SuiteScripts/ns-jasmine/spec/introduction.js',
+        line: 424
+      },
+      {
+        raw:
+          'attempt(/SuiteScripts/ns-jasmine/vendor/shimJasmine/shim-jasmine.js:172)',
+        func: 'attempt',
+        file: '/SuiteScripts/ns-jasmine/vendor/shimJasmine/shim-jasmine.js',
+        line: 172
+      }
+    ]);
+  });
+
+  it('understands NetSuite style traces from a N/error', function() {
+    var error = {
+      message: 'error message',
+      stack: [
+        'createError(N/error.js)',
+        '<anonymous>(/SuiteScripts/ns-jasmine/spec/introduction.js:424)',
+        'attempt(/SuiteScripts/ns-jasmine/vendor/shimJasmine/shim-jasmine.js:172)'
+      ]
+    };
+
+    var result = new jasmineUnderTest.StackTrace(error);
+
+    // the error message is not in the stack
+    expect(result.message).toBeFalsy();
+    expect(result.style).toEqual('webkit');
+    expect(result.frames).toEqual([
+      {
+        raw: 'createError(N/error.js)',
+        func: 'createError',
+        file: 'N/error.js',
+        line: undefined
+      },
+      {
+        raw: '<anonymous>(/SuiteScripts/ns-jasmine/spec/introduction.js:424)',
+        func: '<anonymous>',
+        file: '/SuiteScripts/ns-jasmine/spec/introduction.js',
+        line: 424
+      },
+      {
+        raw:
+          'attempt(/SuiteScripts/ns-jasmine/vendor/shimJasmine/shim-jasmine.js:172)',
+        func: 'attempt',
+        file: '/SuiteScripts/ns-jasmine/vendor/shimJasmine/shim-jasmine.js',
+        line: 172
+      }
+    ]);
+  });
+
+  it('understands Rhino style traces from an Error', function() {
+    var error = {
+      message: 'error message',
+      stack:
+        '\tat SYSTEM_LIBS:2413 (localRequire)\n' + '\tat INVOCATION_WRAPPER:42'
+    };
+
+    var result = new jasmineUnderTest.StackTrace(error);
+
+    // the error message is not in the stack
+    expect(result.message).toBeFalsy();
+    expect(result.style).toEqual('v8');
+    expect(result.frames).toEqual([
+      {
+        raw: '\tat SYSTEM_LIBS:2413 (localRequire)',
+        func: 'localRequire',
+        file: 'SYSTEM_LIBS',
+        line: 2413
+      },
+      {
+        raw: '\tat INVOCATION_WRAPPER:42',
+        func: undefined,
+        file: 'INVOCATION_WRAPPER',
+        line: 42
       }
     ]);
   });

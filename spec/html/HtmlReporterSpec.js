@@ -64,7 +64,7 @@ describe("HtmlReporter", function() {
   describe("when a spec is done", function() {
     it("logs errors to the console and prints a special symbol if it is an empty spec", function() {
       if (typeof console === "undefined") {
-        console = { error: function(){} };
+        console = { warn: function(){} };
       }
 
       var env = new jasmineUnderTest.Env(),
@@ -77,7 +77,7 @@ describe("HtmlReporter", function() {
         createTextNode: function() { return document.createTextNode.apply(document, arguments); }
       });
 
-      spyOn(console, 'error');
+      spyOn(console, 'warn');
 
       reporter.initialize();
 
@@ -87,7 +87,7 @@ describe("HtmlReporter", function() {
         passedExpectations: [],
         failedExpectations: []
       });
-      expect(console.error).toHaveBeenCalledWith("Spec \'Some Name\' has no expectations.");
+      expect(console.warn).toHaveBeenCalledWith("Spec \'Some Name\' has no expectations.");
       var specEl = container.querySelector('.jasmine-symbol-summary li');
       expect(specEl.getAttribute("class")).toEqual("jasmine-empty");
     });
@@ -220,7 +220,7 @@ describe("HtmlReporter", function() {
   describe("when Jasmine is done", function() {
     it("adds a warning to the link title of specs that have no expectations", function() {
       if (!window.console) {
-        window.console = { error: function(){} };
+        window.console = { warn: function(){} };
       }
       var env = new jasmineUnderTest.Env(),
       container = document.createElement('div'),
@@ -232,7 +232,7 @@ describe("HtmlReporter", function() {
         createTextNode: function() { return document.createTextNode.apply(document, arguments); }
       });
 
-      spyOn(console, 'error');
+      spyOn(console, 'warn');
 
       reporter.initialize();
       reporter.jasmineStarted({});

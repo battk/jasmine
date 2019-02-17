@@ -1,4 +1,4 @@
-getJasmineRequireObj().util = function(j$) {
+getJasmineRequireObj().util = function(j$, nError) {
 
   var util = {};
 
@@ -119,6 +119,18 @@ getJasmineRequireObj().util = function(j$) {
 
     if (error.stack) {
       return error;
+    }
+
+    if (nError && typeof nError.create === 'function') {
+      // Use NetSuite's Error Object, it actually has a stack
+      var ssError = nError.create({});
+
+      // NetSuite Error stacks are array of strings
+      // Normal JavaScript Errors are strings
+      if (ssError.stack) {
+        error.stack = ssError.stack.join('\n');
+        return error;
+      }
     }
 
     // But some browsers (e.g. Phantom) only provide a stack trace if we throw.

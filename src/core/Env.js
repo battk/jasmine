@@ -76,7 +76,17 @@ getJasmineRequireObj().Env = function(j$) {
        * @type Boolean
        * @default false
        */
-      hideDisabled: false
+      hideDisabled: false,
+      /**
+       * Whether or not the spec queue runner is forced to run synchronously.
+       * Synchronous queue runner cannot stop long running specs, does not run recursively,
+       * does not support Promises, and in general does not support async specs
+       * The queue runner is forced to be synchronous if there is no setTimeout on the Jasmine global
+       * @name Configuration#forceSynchronous
+       * @type Boolean
+       * @default false
+       */
+      forceSynchronous: false
     };
 
     var currentSuite = function() {
@@ -141,6 +151,10 @@ getJasmineRequireObj().Env = function(j$) {
 
       if (configuration.hasOwnProperty('hideDisabled')) {
         config.hideDisabled = configuration.hideDisabled;
+      }
+
+      if (configuration.hasOwnProperty('forceSynchronous')) {
+        config.forceSynchronous = !!configuration.forceSynchronous;
       }
     };
 
@@ -245,7 +259,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var clearResourcesForRunnable = function(id) {
-        spyRegistry.clearSpies();
+        spyRegistry.clearSpies(id);
         delete runnableResources[id];
     };
 
@@ -396,6 +410,7 @@ getJasmineRequireObj().Env = function(j$) {
         (currentRunnable() || topSuite).onException(e);
       };
       options.deprecated = self.deprecated;
+      options.forceSynchronous = config.forceSynchronous;
 
       new j$.QueueRunner(options).execute(args);
     };
@@ -634,6 +649,7 @@ getJasmineRequireObj().Env = function(j$) {
         if(!currentRunnable()) {
           throw new Error('Spies must be created in a before function or a spec');
         }
+
         return runnableResources[currentRunnable().id].spies;
       },
       createSpy: function(name, originalFn) {

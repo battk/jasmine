@@ -20,18 +20,13 @@ module.exports = function (config) {
       'src/core/**/*.js',
       'src/html/**/*.js',
       'src/**/*.js',
-      'spec/helpers/asyncAwait.js',
-      'spec/helpers/BrowserFlags.js',
-      'spec/helpers/checkForMap.js',
-      'spec/helpers/checkForSet.js',
-      'spec/helpers/checkForSymbol.js',
-      'spec/helpers/checkForTypedArrays.js',
-      'spec/helpers/integrationMatchers.js',
-      'spec/helpers/promises.js',
-      'spec/helpers/defineJasmineUnderTest.js',
+      'spec/helpers/*.js',
       'spec/**/*[Ss]pec.js'
     ],
-    exclude: ['spec/npmPackage/**/*'],
+    exclude: [
+      'spec/npmPackage/**/*',
+      'spec/helpers/nodeDefineJasmineUnderTest.js'
+    ],
     detectBrowsers: {
       preferHeadless: true,
       postDetection: function (availableBrowsers) {

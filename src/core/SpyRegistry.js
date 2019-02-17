@@ -137,7 +137,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       return obj;
     };
 
-    this.clearSpies = function() {
+    this.clearSpies = function(id) {
       var spies = currentSpies();
       for (var i = spies.length - 1; i >= 0; i--) {
         var spyEntry = spies[i];
