@@ -24,3 +24,6 @@ build/
 dist
 nbproject/
 *.iml
+ns-jasmine-core.eml
+.project
+.settings
