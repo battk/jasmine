@@ -10,22 +10,13 @@ module.exports = function (config) {
     reporters: ['dots'],
     files: [
       'src/core/requireCore.js',
-      'src/core/base.js',
-      'src/core/util.js',
-      'src/core/Spec.js',
-      'src/core/Env.js',
-      'src/core/JsApiReporter.js',
-      'src/core/PrettyPrinter.js',
-      'src/core/Suite.js',
-      'src/core/**/*.js',
-      'src/html/**/*.js',
       'src/**/*.js',
       'spec/helpers/*.js',
+      'spec/defines/defineJasmineUnderTest.js',
       'spec/**/*[Ss]pec.js'
     ],
     exclude: [
-      'spec/npmPackage/**/*',
-      'spec/helpers/nodeDefineJasmineUnderTest.js'
+      'spec/npmPackage/**/*'
     ],
     detectBrowsers: {
       preferHeadless: true,

@@ -79,11 +79,11 @@ describe('ExceptionFormatter', function() {
     }
 
     var generateError = function generateError(message) {
-      if (typeof nError === 'function') {
+      if (nError && typeof nError.create === 'function') {
         return nError.create({message: message});
       }
       return new Error(message);
-    }
+    };
 
     it('formats stack traces', function() {
       var error;
@@ -140,6 +140,9 @@ describe('ExceptionFormatter', function() {
       var lines = result.split('\n');
 
       if (lines[0].match(/an error/)) {
+        lines.shift();
+      }
+      if (lines[0].match(/createError\(N\/error.*\)/)) {
         lines.shift();
       }
       if (lines[0].match(/generateError/)) {

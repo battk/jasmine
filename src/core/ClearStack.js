@@ -60,13 +60,8 @@ getJasmineRequireObj().clearStack = function(j$) {
       };
     } else if (!j$.util.isUndefined(global.MessageChannel)) {
       return messageChannelImpl(global, setTimeoutImpl);
-    } else if (j$.isFunction_(realSetTimeout)) {
-      return setTimeoutImpl;
     } else {
-      // this doesn't actually clear the stack, but its better that an Error
-      return function clearStack(fn) {
-        fn.call(global);
-      };
+      return setTimeoutImpl;
     }
   }
 

@@ -25,7 +25,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || emptyFn;
     this.userContext = attrs.userContext || new j$.UserContext();
-    this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
+    this.timeout = attrs.timeout || (attrs.forceSynchronous ? {} : {
+      setTimeout: setTimeout,
+      clearTimeout: clearTimeout
+    });
     this.fail = attrs.fail || emptyFn;
     this.globalErrors = attrs.globalErrors || { pushListener: emptyFn, popListener: emptyFn };
     this.completeOnFirstError = !!attrs.completeOnFirstError;
@@ -312,10 +315,9 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       iterativeIndex++;
     }
 
-    this.clearStack(function () {
-      self.globalErrors.popListener(self.handleFinalError);
-      self.onComplete(self.errored && new StopExecutionError());
-    });
+    // there is no way to clear the stacktrace
+    self.globalErrors.popListener(self.handleFinalError);
+    self.onComplete(self.errored && new StopExecutionError());
   };
 
   return QueueRunner;

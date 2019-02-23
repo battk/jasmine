@@ -1,4 +1,8 @@
 describe('toHaveClass', function() {
+  if (jasmine.getEnv().isNetSuite()) {
+    return;
+  }
+
   beforeEach(function() {
     this.createElementWithClassName = function(className) {
       var el = this.doc.createElement('div');
@@ -6,7 +10,7 @@ describe('toHaveClass', function() {
       return el;
     };
 
-    if (typeof document !== 'undefined') {
+    if (jasmine.getEnv().isBrowser()) {
       this.doc = document;
     } else {
       var JSDOM = require('jsdom').JSDOM;
@@ -43,7 +47,7 @@ describe('toHaveClass', function() {
 
     expect(function() {
       matcher.compare('x', 'foo');
-    }).toThrowError("'x' is not a DOM element");
+    }).toThrowError('\'x\' is not a DOM element');
 
     expect(function() {
       matcher.compare(undefined, 'foo');
@@ -51,11 +55,11 @@ describe('toHaveClass', function() {
 
     var textNode = this.doc.createTextNode('');
     expect(function() {
-      matcher.compare(textNode, 'foo')
+      matcher.compare(textNode, 'foo');
     }).toThrowError('HTMLNode is not a DOM element');
 
     expect(function() {
       matcher.compare({classList: ''}, 'foo');
-    }).toThrowError("Object({ classList: '' }) is not a DOM element");
+    }).toThrowError('Object({ classList: \'\' }) is not a DOM element');
   });
 });

@@ -1,5 +1,9 @@
-describe('ClearStack', function() {
-  it('works in an integrationy way', function(done) {
+describe("ClearStack", function() {
+  if (jasmine.getEnv().isNetSuite()) {
+    return;
+  }
+
+  it("works in an integrationy way", function(done) {
     var clearStack = jasmineUnderTest.getClearStack(jasmineUnderTest.getGlobal());
 
     clearStack(function() {
@@ -7,7 +11,7 @@ describe('ClearStack', function() {
     });
   });
 
-  it('uses setImmediate when available', function() {
+  it("uses setImmediate when available", function() {
     var setImmediate = jasmine.createSpy('setImmediate').and.callFake(function(fn) { fn() }),
         global = { setImmediate: setImmediate },
         clearStack = jasmineUnderTest.getClearStack(global),
@@ -21,7 +25,7 @@ describe('ClearStack', function() {
     expect(setImmediate).toHaveBeenCalled();
   });
 
-  it('uses setTimeout instead of setImmediate every 10 calls to make sure we release the CPU', function() {
+  it("uses setTimeout instead of setImmediate every 10 calls to make sure we release the CPU", function() {
     var setImmediate = jasmine.createSpy('setImmediate'),
         setTimeout = jasmine.createSpy('setTimeout'),
         global = { setImmediate: setImmediate, setTimeout: setTimeout },
@@ -49,7 +53,7 @@ describe('ClearStack', function() {
     expect(setTimeout.calls.count()).toEqual(1);
   });
 
-  it('uses MessageChannels when available', function() {
+  it("uses MessageChannels when available", function() {
     var fakeChannel = {
           port1: {},
           port2: { postMessage: function() { fakeChannel.port1.onmessage(); } }
@@ -65,7 +69,7 @@ describe('ClearStack', function() {
     expect(called).toBe(true);
   });
 
-  it('uses setTimeout instead of MessageChannel every 10 calls to make sure we release the CPU', function() {
+  it("uses setTimeout instead of MessageChannel every 10 calls to make sure we release the CPU", function() {
     var fakeChannel = {
           port1: {},
           port2: {
@@ -100,7 +104,7 @@ describe('ClearStack', function() {
     expect(setTimeout.calls.count()).toEqual(1);
   });
 
-  it('calls setTimeout when onmessage is called recursively', function() {
+  it("calls setTimeout when onmessage is called recursively", function() {
     var fakeChannel = {
           port1: {},
           port2: { postMessage: function() { fakeChannel.port1.onmessage(); } }
@@ -111,7 +115,7 @@ describe('ClearStack', function() {
           setTimeout: setTimeout,
         },
         clearStack = jasmineUnderTest.getClearStack(global),
-        fn = jasmine.createSpy('second clearStack function');
+        fn = jasmine.createSpy("second clearStack function");
 
     clearStack(function() {
       clearStack(fn);
@@ -121,8 +125,8 @@ describe('ClearStack', function() {
     expect(setTimeout).toHaveBeenCalledWith(fn, 0);
   });
 
-  it('falls back to setTimeout', function() {
-    var setTimeout = jasmine.createSpy('setTimeout').and.callFake(function(fn) { fn(); }),
+  it("falls back to setTimeout", function() {
+    var setTimeout = jasmine.createSpy('setTimeout').and.callFake(function(fn) { fn() }),
         global = { setTimeout: setTimeout },
         clearStack = jasmineUnderTest.getClearStack(global),
         called = false;
@@ -133,29 +137,5 @@ describe('ClearStack', function() {
 
     expect(called).toBe(true);
     expect(setTimeout).toHaveBeenCalledWith(jasmine.any(Function), 0);
-  });
-
-  it('just runs the function when there are no async functions', function() {
-    var clearStack = jasmineUnderTest.getClearStack({});
-    var spy = jasmine.createSpy();
-    var global = jasmine.getGlobal();
-    var setImmediateSpy, setTimeoutSpy;
-    if (global.setTimeout) {
-      setTimeoutSpy = spyOn(global, 'setTimeout').and.callThrough();
-    }
-    if (global.setImmediate) {
-      setImmediateSpy = spyOn(global, 'setImmediate').and.callThrough();
-    }
-
-    clearStack(spy);
-
-    expect(spy).toHaveBeenCalled();
-
-    if (global.setTimeout) {
-      expect(setTimeoutSpy).not.toHaveBeenCalled();
-    }
-    if (global.setImmediate) {
-      expect(setImmediateSpy).not.toHaveBeenCalled();
-    }
   });
 });

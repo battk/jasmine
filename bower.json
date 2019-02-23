@@ -1,15 +1,16 @@
 {
-  "name": "jasmine-core",
+  "name": "ns-jasmine-core",
   "homepage": "https://jasmine.github.io",
   "authors": [
     "slackersoft <gregg@slackersoft.net>"
   ],
-  "description": "Official packaging of Jasmine's core files",
+  "description": "Unofficial packaging of Jasmine's core files for use in NetSuite",
   "keywords": [
     "test",
     "jasmine",
     "tdd",
-    "bdd"
+    "bdd",
+    "netsuite"
   ],
   "license": "MIT",
   "moduleType": "globals",
@@ -21,8 +22,6 @@
     "node_modules",
     "pkg",
     "release_notes",
-    "spec",
-    "src",
     "Gemfile",
     "Gemfile.lock",
     "Rakefile",

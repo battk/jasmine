@@ -2,32 +2,20 @@
   "bitwise": true,
   "curly": true,
   "globals": {
-    "clearTimeout": false,
-    "console": false,
     "getJasmineRequireObj": true,
     "jasmineRequire": true,
-    "setTimeout": false,
-    "clearTimeout": false,
-    "describe": false,
-    "it": false,
-    "jasmine": false,
     "jasmineUnderTest": false,
-    "expect": false,
-    "spyOn": false,
-    "pending": false,
-    "require": false,
-    "define": false,
-    "beforeEach": false,
-    "Promise": false,
-    "afterEach": false,
-    "setInterval": false,
-    "clearInterval": false
-
+    "define": false
   },
   "immed": true,
   "newcap": true,
   "trailing": true,
   "loopfunc": true,
   "quotmark": "single",
-  "undef": true
+  "undef": true,
+  "esversion": 8,
+  "browser": true,
+  "devel": true,
+  "jasmine": true,
+  "node": true
 }

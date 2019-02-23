@@ -6,8 +6,7 @@
   ],
   "helpers": [
     "helpers/*.js",
-    "!helpers/BrowserFlags.js",
-    "!helpers/defineJasmineUnderTest.js"
+    "defines/nodeDefineJasmineUnderTest.js"
   ],
   "random": true
 }

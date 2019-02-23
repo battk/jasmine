@@ -3,8 +3,6 @@ grunt/
 node_modules
 pkg/
 release_notes/
-spec/
-src/
 Gemfile
 Gemfile.lock
 Rakefile

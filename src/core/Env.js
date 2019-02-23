@@ -80,7 +80,7 @@ getJasmineRequireObj().Env = function(j$) {
       /**
        * Whether or not the spec queue runner is forced to run synchronously.
        * Synchronous queue runner cannot stop long running specs, does not run recursively,
-       * does not support Promises, and in general does not support async specs
+       * does not support async or Promise specs, and cannot clear stacktraces
        * The queue runner is forced to be synchronous if there is no setTimeout on the Jasmine global
        * @name Configuration#forceSynchronous
        * @type Boolean

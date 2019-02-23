@@ -1,6 +1,7 @@
 (function(env) {
   function browserVersion(matchFn) {
-    var userAgent = jasmine.getGlobal().navigator.userAgent;
+    var navigator = jasmine.getGlobal().navigator;
+    var userAgent = navigator ? navigator.userAgent : null;
     if (!userAgent) { return void 0; }
 
     var match = matchFn(userAgent);

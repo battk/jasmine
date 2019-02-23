@@ -1,14 +1,16 @@
 [false, true].forEach(function(isSync) {
+  if (!isSync && jasmine.getEnv().isNetSuite()) {
+    return;
+  }
+
   function newEnv(config) {
     var env = new jasmineUnderTest.Env(config);
-
-    if (isSync) {
-      env.configure({forceSynchronous: true});
-    }
+    env.configure({forceSynchronous: isSync});
 
     return env;
   }
-  xdescribe((isSync ? 'sync' : 'async') + ' Env integration', function () {
+
+  describe((isSync ? 'sync' : 'async') + ' Env integration', function () {
     beforeEach(function () {
       jasmine.getEnv().registerIntegrationMatchers();
     });
@@ -206,7 +208,6 @@
 
       env.execute();
     });
-
 
     it('calls associated befores/specs/afters with the same "this"', function (done) {
       var env = newEnv();
@@ -476,6 +477,11 @@
     });
 
     it('copes with async failures after done has been called', function (done) {
+      if (isSync) {
+        done();
+        return;
+      }
+
       var global = {
         setTimeout: function (fn, delay) {
           setTimeout(fn, delay);
@@ -1050,7 +1056,9 @@
     });
 
     describe('with a mock clock', function () {
-      jasmine.getEnv().requireSetTimeout();
+      if (jasmine.getEnv().isNetSuite()) {
+        return;
+      }
 
       var realSetTimeout;
 
@@ -1120,6 +1128,11 @@
       });
 
       it('should not use the mock clock for asynchronous timeouts', function (done) {
+        if (isSync) {
+          done();
+          return;
+        }
+
         var env = createMockedEnv(),
           reporter = jasmine.createSpyObj('fakeReporter', ['specDone', 'jasmineDone']),
           clock = env.clock;
@@ -1158,6 +1171,11 @@
       });
 
       it('should wait a custom interval before reporting async functions that fail to call done', function (done) {
+        if (isSync) {
+          done();
+          return;
+        }
+
         var env = createMockedEnv(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
 
@@ -1600,6 +1618,11 @@
     });
 
     it('should report pending spec messages from promise-returning functions', function (done) {
+      if (isSync) {
+        done();
+        return;
+      }
+
       function StubPromise(fn) {
         try {
           fn();
@@ -2051,6 +2074,11 @@
     });
 
     it('should associate errors thrown from async code with the correct runnable', function (done) {
+      if (isSync) {
+        done();
+        return;
+      }
+
       var env = newEnv(),
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
 
@@ -2068,13 +2096,9 @@
 
       env.describe('async suite', function () {
         env.afterAll(function (innerDone) {
-          if (!isSync) {
+          setTimeout(function () {
             throw new Error('suite');
-          } else {
-            setTimeout(function () {
-              throw new Error('suite');
-            }, 1);
-          }
+          }, 1);
         }, 10);
 
         env.it('spec', function () {
@@ -2083,13 +2107,9 @@
 
       env.describe('suite', function () {
         env.it('async spec', function (innerDone) {
-          if (!isSync) {
+          setTimeout(function () {
             throw new Error('spec');
-          } else {
-            setTimeout(function () {
-              throw new Error('spec');
-            }, 1);
-          }
+          }, 1);
         }, 10);
       });
 
@@ -2495,8 +2515,10 @@
       var env = newEnv(),
         reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
 
-      // prevent deprecation from being desplayed
-      spyOn(console, 'error');
+      // prevent deprecation from being displayed
+      if (!jasmine.getEnv().isNetSuite()) {
+        spyOn(console, 'error');
+      }
 
       reporter.jasmineDone.and.callFake(function (result) {
         expect(result.deprecationWarnings).toEqual([
@@ -2559,8 +2581,10 @@
         specLevelError = err;
       }
 
-      // prevent deprecation from being desplayed
-      spyOn(console, 'error');
+      // prevent deprecation from being displayed
+      if (!jasmine.getEnv().isNetSuite()) {
+        spyOn(console, 'error');
+      }
 
       reporter.jasmineDone.and.callFake(function (result) {
         expect(result.deprecationWarnings).toEqual([
@@ -2612,6 +2636,10 @@
 
     it('supports async matchers', function (done) {
       jasmine.getEnv().requirePromises();
+      if (isSync) {
+        done();
+        return;
+      }
 
       var env = newEnv(),
         specDone = jasmine.createSpy('specDone'),
@@ -2662,6 +2690,11 @@
     });
 
     it('provides custom equality testers to async matchers', function (done) {
+      if (isSync) {
+        done();
+        return;
+      }
+
       jasmine.getEnv().requirePromises();
 
       var env = newEnv(),
@@ -2691,6 +2724,10 @@
 
     it('includes useful stack frames in async matcher failures', function (done) {
       jasmine.getEnv().requirePromises();
+      if (isSync) {
+        done();
+        return;
+      }
 
       var env = newEnv(),
         specDone = jasmine.createSpy('specDone');

@@ -1,4 +1,8 @@
 [false, true].forEach(function(isSync) {
+  if (!isSync && jasmine.getEnv().isNetSuite()) {
+    return;
+  }
+
   function newQueueRunner(config) {
     if (isSync && config) {
       config.forceSynchronous = true;
@@ -440,6 +444,10 @@
       });
 
       it('handles exceptions thrown while waiting for the stack to clear', function() {
+        if (isSync) {
+          return;
+        }
+
         var queueableFn = { fn: function(done) { done(); } },
           global = {},
           errorListeners = [],
@@ -459,9 +467,7 @@
 
         queueRunner.execute();
 
-        if (!isSync) {
-          jasmine.clock().tick();
-        }
+        jasmine.clock().tick();
 
         expect(clearStack).toHaveBeenCalled();
         expect(errorListeners.length).toEqual(1);
@@ -725,6 +731,10 @@
     });
 
     describe('clearing the stack', function() {
+      if (isSync) {
+        return;
+      }
+
       beforeEach(function() {
         jasmine.clock().install();
       });
